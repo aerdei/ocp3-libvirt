@@ -1,0 +1,7 @@
+/exports/metrics {{ ansible_eth0.ipv4.network }}/24(rw,all_squash,async)
+/exports/prometheus/prometheus {{ ansible_eth0.ipv4.network }}/24(rw,all_squash,async)
+/exports/prometheus/alertmanager {{ ansible_eth0.ipv4.network }}/24(rw,all_squash,async)
+/exports/prometheus/alertbuffer {{ ansible_eth0.ipv4.network }}/24(rw,all_squash,async)
+/exports/etcd {{ ansible_eth0.ipv4.network }}/24(rw,root_squash,async)
+
+/exports/pv {{ ansible_eth0.ipv4.network }}/24(rw,root_squash,async)

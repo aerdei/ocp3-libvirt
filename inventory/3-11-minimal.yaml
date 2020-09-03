@@ -1,0 +1,67 @@
+# Create an OSEv3 group that contains the masters, nodes, and etcd groups
+[OSEv3:children]
+masters
+nodes
+etcd
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+
+## Enable/Disable Metrics (Hawkular+Heapster+Cassandra)
+### Do not Install metrics
+openshift_metrics_install_metrics=false
+### Do not start metrics cluster on completion
+openshift_metrics_start_cluster=false
+## Enable/Disable Prometheus
+### Do not deploy Prometheus
+openshift_hosted_prometheus_deploy=false
+
+# Disable disk and memory availability check
+openshift_disable_check="disk_availability,memory_availability"
+
+# Hostnames
+openshift_master_cluster_hostname=master-int.ocp.example.com
+openshift_master_cluster_public_hostname=master.ocp.example.com
+openshift_master_default_subdomain=apps.ocp.example.com
+
+# SSH user, this user should allow ssh based auth without requiring a password
+ansible_ssh_user=root
+
+# We are deploying OCP3.11
+openshift_deployment_type=openshift-enterprise
+openshift_release="3.11"
+openshift_pkg_version=-3.11.98
+openshift_image_tag=v3.11.98
+
+oreg_auth_user='user'
+oreg_auth_password='password'
+
+openshift_install_examples=false
+
+# Enable Google OAuth
+#openshift_master_identity_providers='oauth_identity_goes_here'
+
+# Configure NetworkPolicy
+os_sdn_network_plugin_name=redhat/openshift-ovs-networkpolicy
+
+# Limit storage plugin installation
+osn_storage_plugin_deps=[]
+
+# Enable Service Catalog
+openshift_enable_service_catalog=false
+
+# Host group for masters
+[masters]
+ocpma01.ocp.example.com
+
+# Host group for etcd
+[etcd]
+ocpma01.ocp.example.com
+
+# Host group for nodes, includes region info
+[nodes]
+ocpma01.ocp.example.com openshift_node_group_name="node-config-master"
+ocpin01.ocp.example.com openshift_node_group_name="node-config-infra"
+ocpno01.ocp.example.com openshift_node_group_name="node-config-compute"
+ocpno02.ocp.example.com openshift_node_group_name="node-config-compute"
+

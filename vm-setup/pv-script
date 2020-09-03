@@ -1,0 +1,25 @@
+mkdir /root/pvs
+for volume in pv{1..50} ; do
+cat << EOF > /root/pvs/${volume}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "${volume}"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "5Gi"
+    },
+    "accessModes": [ "ReadWriteOnce" ],
+    "nfs": {
+        "path": "/exports/pv/${volume}",
+        "server": "192.168.122.2"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+EOF
+done;
+
+cat /root/pvs/* | oc create -f -

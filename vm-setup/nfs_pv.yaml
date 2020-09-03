@@ -1,0 +1,43 @@
+---
+- name: Create PV dirs and NFS shares
+  become: True
+  become_user: root
+  hosts: all
+  tasks:
+    - name: Install nfs-utils
+      yum: 
+        name: nfs-utils
+        state: present
+
+    - name: Create dir structure
+      file:
+        path: "/exports/{{ item }}"
+        state: directory
+        mode: 0777
+      with_items:
+        - metrics
+        - prometheus/prometheus
+        - prometheus/alertmanager
+        - prometheus/alertbuffer
+        - etcd
+        - pv
+
+    - name: Create dir structure for pvs
+      file:
+        path: "/exports/pv/pv{{ item }}"
+        state: directory
+        mode: 0777
+      with_sequence: 10-50
+
+    - name: Create exports template
+      template:
+        src: nfs_pv_export.j2
+        dest: /etc/exports
+
+    - name: Enable and start nfs-server
+      service:
+        name: nfs-server
+        enabled: yes
+        state: reloaded
+
+ 
